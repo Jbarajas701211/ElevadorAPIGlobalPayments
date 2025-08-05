@@ -29,46 +29,6 @@
 </div>
 
 <form asp-controller="Elevador" asp-action="Index" method="post">
-    @*   <div>
-        <label for="Posicion">Posición:</label>
-        <input type="number" id="Posicion" name="Posicion" value="@Model.ElevadorEstado.Posicion" class="form-control" />
-    </div>
-    <div>
-        <label for="Puertas">Estado de puertas:</label>
-        <select id="Puertas" name="Puertas" class="form-control">
-            <option value="">Selecciones un estado</option>
-            @foreach(var item in Model.EstadoPuertaOptions)
-            {
-                <option value="@item.Value" >@item.Text</option>
-            }
-        </select>
-    </div>
-    <div>
-        <label for="Estado">Estado de movimiento:</label>
-        <select id="Estado" name="Estado" class="form-control">
-            <option value="">Selecciones un estado</option>
-            @foreach (var item in Model.EstadoMovimientoOptions)
-            {
-                <option value="@item.Value">@item.Text</option>
-            }
-        </select>
-    </div>
-     *@
-   @*  <div>
-        <label for="PisoSolicitado">Piso Solicitado: </label>
-        <input type="number" name="PisoSolicitado" class="form-control" min="1" max="5" />
-
-    </div> *@
-   @*  <div>
-        <label for="DireccionActual">Dirección Solicitada:</label>
-        <select id="DireccionActual" name="DireccionSolicitada" class="form-control">
-            <option value="">Selecciones un estado</option>
-            @foreach (var item in Model.DireccionOptions)
-            {
-                <option value="@item.Value">@item.Text</option>
-            }
-        </select>
-    </div> *@
     <input type="hidden" name="PisoActual" value="@Model.ElevadorEstado.PisoActual" />
     <input type="hidden" name="PisoSolicitado" value="@Model.ElevadorEstado.PisoActual" />
     <input type="hidden" name="DireccionSolicitada" value="@DireccionElevador.Subir" />
