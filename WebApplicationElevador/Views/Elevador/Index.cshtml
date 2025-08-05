@@ -1,0 +1,246 @@
+﻿@model WebApplicationElevador.Models.View.ModeloElevadorView;
+@using WebApplicationElevador.Models.Enum;
+
+
+@if(TempData["ErrorMessage"] is not null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="errorAlert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+    </div>
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById('errorAlert');
+            if (alert) {
+                alert.classList.remove('show');
+                alert.classList.add('hide');
+            }
+        }, 4000);
+    </script>
+}
+
+<h1>Simulador Elevador</h1>
+
+<div>
+    <p><strong>Piso actual:</strong> @Model.ElevadorEstado.PisoActual</p>
+    <p><strong>Estado de puertas:</strong> <span id="estadoPuerta">@Model.ElevadorEstado.Puertas</span> </p>
+    <p><strong>Estado de movimiento:</strong> @Model.ElevadorEstado.Estado</p>
+    <p><strong>Dirección actual:</strong> @Model.ElevadorEstado.DireccionActual</p>
+</div>
+
+<form asp-controller="Elevador" asp-action="Index" method="post">
+    @*   <div>
+        <label for="Posicion">Posición:</label>
+        <input type="number" id="Posicion" name="Posicion" value="@Model.ElevadorEstado.Posicion" class="form-control" />
+    </div>
+    <div>
+        <label for="Puertas">Estado de puertas:</label>
+        <select id="Puertas" name="Puertas" class="form-control">
+            <option value="">Selecciones un estado</option>
+            @foreach(var item in Model.EstadoPuertaOptions)
+            {
+                <option value="@item.Value" >@item.Text</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label for="Estado">Estado de movimiento:</label>
+        <select id="Estado" name="Estado" class="form-control">
+            <option value="">Selecciones un estado</option>
+            @foreach (var item in Model.EstadoMovimientoOptions)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+     *@
+   @*  <div>
+        <label for="PisoSolicitado">Piso Solicitado: </label>
+        <input type="number" name="PisoSolicitado" class="form-control" min="1" max="5" />
+
+    </div> *@
+   @*  <div>
+        <label for="DireccionActual">Dirección Solicitada:</label>
+        <select id="DireccionActual" name="DireccionSolicitada" class="form-control">
+            <option value="">Selecciones un estado</option>
+            @foreach (var item in Model.DireccionOptions)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div> *@
+    <input type="hidden" name="PisoActual" value="@Model.ElevadorEstado.PisoActual" />
+    <input type="hidden" name="PisoSolicitado" value="@Model.ElevadorEstado.PisoActual" />
+    <input type="hidden" name="DireccionSolicitada" value="@DireccionElevador.Subir" />
+    <input type="hidden" name="EstadoMovimiento" value="@EstadoMovimiento.Moviendo" />
+    <input type="hidden" name="Puertas" value="@EstadoPuerta.Cerrada" />
+
+
+    @if (@Model.ElevadorEstado.PisoActual >= 1 && Model.ElevadorEstado.PisoActual <= 4 &&
+    Model.ElevadorEstado.Puertas == WebApplicationElevador.Models.Enum.EstadoPuerta.Cerrada )
+    {
+        <div class="botones">
+            <button id="btnSubir" type="submit" formaction="/Elevador/LlamaElevador" class="btn btn-primary">Botón subir</button>
+        </div> 
+    }
+
+    @if (@Model.ElevadorEstado.PisoActual >= 2 && Model.ElevadorEstado.PisoActual <= 5 &&
+        Model.ElevadorEstado.Puertas == WebApplicationElevador.Models.Enum.EstadoPuerta.Cerrada)
+    {
+        <div class="botones">
+            <button id="btnBajar" type="submit" formaction="/Elevador/LlamaElevador" class="btn btn-primary">Botón bajar</button>
+        </div>
+    }
+
+    @if (Model.ElevadorEstado.Puertas == WebApplicationElevador.Models.Enum.EstadoPuerta.Abierta)
+    {
+        <label for="seleccionPiso">Selecciona un piso:</label>
+        <select id="seleccionPiso">
+            <option value="">--Selecciona--</option>
+            <option value="1">Piso 1</option>
+            <option value="2">Piso 2</option>
+            <option value="3">Piso 3</option>
+            <option value="4">Piso 4</option>
+            <option value="5">Piso 5</option>
+        </select>
+        
+        <div class="container">
+            <div class="row">
+        @if (@Model.ElevadorEstado.PisoActual <= 4 && Model.ElevadorEstado.PisoActual >= 1 &&
+                            Model.ElevadorEstado.Puertas == WebApplicationElevador.Models.Enum.EstadoPuerta.Abierta &&
+                            Model.ElevadorEstado.DireccionActual == DireccionElevador.Subir)
+        {
+                <div class="col-4">
+                    <div class="botones">
+                        <button id"btnEjecutarSubir" type="submit" formaction="/Elevador/Subir" class="btn btn-primary">Botón ejecuta Subir</button>
+                    </div>
+                </div>
+
+        }
+        @if (@Model.ElevadorEstado.PisoActual <= 5 && Model.ElevadorEstado.PisoActual >= 2 && 
+        Model.ElevadorEstado.Puertas == WebApplicationElevador.Models.Enum.EstadoPuerta.Abierta &&
+        Model.ElevadorEstado.DireccionActual == DireccionElevador.Bajar)
+        {
+                <div class="col-4">
+                    <div class="botones">
+                        <button id="btnEjecutarBajar" type="submit" formaction="/Elevador/Bajar" class="btn btn-primary">Botón ejecuta bajar</button>
+                    </div>
+                </div>
+        }
+            </div>
+        </div>
+       
+    }
+
+</form>
+
+<div id="pisos" class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="piso" data-piso="1">Piso 1</div>
+            <div class="piso" data-piso="2">Piso 2</div>
+            <div class="piso" data-piso="3">Piso 3</div>
+            <div class="piso" data-piso="4">Piso 4</div>
+            <div class="piso" data-piso="5">Piso 5</div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+
+<script>
+    var pisoActual = @Model.ElevadorEstado.PisoActual
+
+    // Función para pintar los pisos
+    function pintarPisos() {
+        document.querySelectorAll('.piso').forEach(div => {
+            var piso = parseInt(div.getAttribute('data-piso'));
+            if (piso === pisoActual) {
+                div.style.backgroundColor = 'green'; 
+            } else {
+                div.style.backgroundColor = 'blue'; 
+            }
+        });
+    }
+
+    window.onload = pintarPisos;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var select = document.getElementById('seleccionPiso');
+        var input = document.querySelector('input[name="PisoSolicitado"]');
+        var form = select ? select.form : null;
+        var submitButtons = form ? form.querySelectorAll('button[type="submit"]') : [];
+        var direccionActual = '@Model.ElevadorEstado.DireccionActual';
+
+        function validarPiso() {
+            var value = parseInt(select.value);
+            var valido = false;
+            
+              if (direccionActual === 'Subir') {
+                    valido = value > pisoActual;
+                } else if (direccionActual === 'Bajar') {
+                    valido = value === 1;
+                }
+
+        submitButtons.forEach(btn => btn.disabled = !valido);
+        input.value = valido ? value : '';
+        }
+
+        if (select && input) {
+            select.addEventListener('change', validarPiso);
+            
+            validarPiso();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function(){
+        var btnSubir = document.querySelector('button[formaction="/Elevador/Subir"]');
+        var inputDireccion = document.querySelector('input[name="DireccionSolicitada"]');
+
+        if(btnSubir && inputDireccion){
+            btnSubir.addEventListener('click', function(){
+                inputDireccion.value= '1';
+            });
+        }
+    });
+
+        document.addEventListener('DOMContentLoaded', function () {
+        var inputDireccion = document.querySelector('input[name="DireccionSolicitada"]');
+
+        var btnSubirId = document.getElementById('btnSubir');
+        var btnBajarId = document.getElementById('btnBajar');
+        var btnEjecutarSubir = document.getElementById('btnEjecutarSubir');
+        var btnEjecutarBajar = document.getElementById('btnEjecutarBajar');
+
+        if (btnSubirId && inputDireccion) {
+            btnSubirId.addEventListener('click', function () {
+                inputDireccion.value = 'Subir';
+            });
+        }
+        if (btnBajarId && inputDireccion) {
+            btnBajarId.addEventListener('click', function () {
+                inputDireccion.value = 'Bajar';
+            });
+        }
+
+        if (btnEjecutarSubir && inputDireccion) {
+            btnEjecutarSubir.addEventListener('click', function () {
+                inputDireccion.value = 'Subir';
+            });
+        };
+
+        if (btnEjecutarBajar && inputDireccion) {
+            btnEjecutarBajar.addEventListener('click', function () {
+                inputDireccion.value = 'Bajar';
+            });
+        };
+    });
+
+    setTimeout(function () {
+        var estadoPuerta = document.getElementById('estadoPuerta');
+        if (estadoPuerta) {
+            estadoPuerta.textContent = 'Cerrada';
+        }
+    }, 5000);
+</script>
