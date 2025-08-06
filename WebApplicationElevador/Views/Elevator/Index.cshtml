@@ -1,0 +1,205 @@
+﻿@model WebApplicationElevador.Models.View.ModelElevatorView;
+@using WebApplicationElevador.Models.Enum;
+
+
+@if(TempData["ErrorMessage"] is not null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="errorAlert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" arial-label="Close"></button>
+    </div>
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById('errorAlert');
+            if (alert) {
+                alert.classList.remove('show');
+                alert.classList.add('hide');
+            }
+        }, 4000);
+    </script>
+}
+
+<h1>Simulador Elevador</h1>
+
+<div>
+    <p><strong>Piso actual:</strong> @Model.StateElevator.CurrentFloor</p>
+    <p><strong>Estado de puertas:</strong> <span id="estadoPuerta">@Model.StateElevator.Doors</span> </p>
+    <p><strong>Estado de movimiento:</strong> @Model.StateElevator.StateMovement</p>
+    <p><strong>Dirección actual:</strong> @Model.StateElevator.CurrentDirection</p>
+</div>
+
+<form asp-controller="Elevador" asp-action="Index" method="post">
+    <input type="hidden" name="CurrentFloor" value="@Model.StateElevator.CurrentFloor" />
+    <input type="hidden" name="FloorRequired" value="@Model.StateElevator.CurrentFloor" />
+    <input type="hidden" name="DirectionRequest" value="@DirectionElevator.Up" />
+    <input type="hidden" name="StateMovement" value="@StateMovement.Moving" />
+    <input type="hidden" name="Doors" value="@StateDoor.Close" />
+
+
+    @if (@Model.StateElevator.CurrentFloor >= 1 && Model.StateElevator.CurrentFloor <= 4 &&
+    Model.StateElevator.Doors == WebApplicationElevador.Models.Enum.StateDoor.Close )
+    {
+        <div class="botones">
+            <button id="btnUp" type="submit" formaction="/Elevator/RequestElevator" class="btn btn-primary">Buton Up</button>
+        </div> 
+    }
+
+    @if (@Model.StateElevator.CurrentFloor >= 2 && Model.StateElevator.CurrentFloor <= 5 &&
+        Model.StateElevator.Doors == WebApplicationElevador.Models.Enum.StateDoor.Close)
+    {
+        <div class="botones">
+            <button id="btnDown" type="submit" formaction="/Elevator/RequestElevator" class="btn btn-primary">Buton Down</button>
+        </div>
+    }
+
+    @if (Model.StateElevator.Doors == WebApplicationElevador.Models.Enum.StateDoor.Open)
+    {
+        <label for="selectionFloor">Select a Floor:</label>
+        <select id="selectionFloor">
+            <option value="">--Select--</option>
+            <option value="1">Floor 1</option>
+            <option value="2">Floor 2</option>
+            <option value="3">Floor 3</option>
+            <option value="4">Floor 4</option>
+            <option value="5">Floor 5</option>
+        </select>
+        
+        <div class="container">
+            <div class="row">
+                @if (@Model.StateElevator.CurrentFloor <= 4 && Model.StateElevator.CurrentFloor >= 1 &&
+                            Model.StateElevator.Doors == WebApplicationElevador.Models.Enum.StateDoor.Open &&
+                            Model.StateElevator.CurrentDirection == DirectionElevator.Up)
+        {
+                <div class="col-4">
+                    <div class="buttons">
+                        <button id="btnRunUp" type="submit" formaction="/Elevator/Up" class="btn btn-primary">Button run up</button>
+                    </div>
+                </div>
+
+        }
+                @if (@Model.StateElevator.CurrentFloor <= 5 && Model.StateElevator.CurrentFloor >= 2 &&
+                            Model.StateElevator.Doors == WebApplicationElevador.Models.Enum.StateDoor.Open &&
+                            Model.StateElevator.CurrentDirection == DirectionElevator.Down)
+        {
+                <div class="col-4">
+                    <div class="botones">
+                            <button id="btnRunDown" type="submit" formaction="/Elevator/Down" class="btn btn-primary">Button run down</button>
+                    </div>
+                </div>
+        }
+            </div>
+        </div>
+       
+    }
+
+</form>
+
+<div id="pisos" class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="floor" data-floor="1">Floor 1</div>
+            <div class="floor" data-floor="2">Floor 2</div>
+            <div class="floor" data-floor="3">Floor 3</div>
+            <div class="floor" data-floor="4">Floor 4</div>
+            <div class="floor" data-floor="5">Floor 5</div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+
+
+<script>
+    var currentFloor = @Model.StateElevator.CurrentFloor
+    // Function to paint the floors
+    function paintFloors() {
+        document.querySelectorAll('.floor').forEach(div => {
+            var floor = parseInt(div.getAttribute('data-floor'));
+            if (floor === currentFloor) {
+                div.style.backgroundColor = 'green'; 
+            } else {
+                div.style.backgroundColor = 'blue'; 
+            }
+        });
+    }
+
+    window.onload = paintFloors;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var select = document.getElementById('selectionFloor');
+        var input = document.querySelector('input[name="FloorRequired"]');
+        var form = select ? select.form : null;
+        var submitButtons = form ? form.querySelectorAll('button[type="submit"]') : [];
+        var currentDirection = '@Model.StateElevator.CurrentDirection';
+
+        function validateFloor() {
+            var value = parseInt(select.value);
+            var validate = false;
+            
+              if (currentDirection === 'Up') {
+                    validate = value > currentFloor;
+                } else if (currentDirection === 'Down') {
+                    validate = value < currentFloor;
+                }
+
+        submitButtons.forEach(btn => btn.disabled = !validate);
+        input.value = validate ? value : '';
+        }
+
+        if (select && input) {
+            select.addEventListener('change', validateFloor);
+            
+            validateFloor();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function(){
+        var btnUp = document.querySelector('button[formaction="/Elevator/Up"]');
+        var inputDirection = document.querySelector('input[name="DirectionRequest"]');
+
+        if(btnUp && inputDirection){
+            btnUp.addEventListener('click', function(){
+                inputDirection.value= '1';
+            });
+        }
+    });
+
+        document.addEventListener('DOMContentLoaded', function () {
+        var inputDirection = document.querySelector('input[name="DirectionRequest"]');
+
+        var btnUpId = document.getElementById('btnUp');
+        var btnDownId = document.getElementById('btnDown');
+        var btnRunUp = document.getElementById('btnRunUp');
+        var btnRunDown = document.getElementById('btnRunDown');
+
+        if (btnUpId && inputDirection) {
+            btnUpId.addEventListener('click', function () {
+                inputDirection.value = 'Up';
+            });
+        }
+        if (btnDownId && inputDirection) {
+            btnDownId.addEventListener('click', function () {
+                inputDirection.value = 'Down';
+            });
+        }
+
+        if (btnRunUp && inputDirection) {
+            btnRunUp.addEventListener('click', function () {
+                inputDirection.value = 'Up';
+            });
+        };
+
+        if (btnRunDown && inputDirection) {
+            btnRunDown.addEventListener('click', function () {
+                inputDirection.value = 'Down';
+            });
+        };
+    });
+
+    setTimeout(function () {
+        var stateDoor = document.getElementById('stateDoor');
+        if (stateDoor) {
+            stateDoor.textContent = 'Close';
+        }
+    }, 5000);
+</script>

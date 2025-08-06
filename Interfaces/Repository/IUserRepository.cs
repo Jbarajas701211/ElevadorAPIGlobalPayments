@@ -9,11 +9,11 @@ namespace Interfaces.Repository
 {
     public interface IUserRepository
     {
-        Task<Usuario?> ObtenerUsuarioPorCorreoAsync(string correo);
-        Task<bool> ActualizarUsuarioBloquearAsync(Usuario usuario);
-        Task<bool> ActualizarIntentosAsync(UserAttempts usuarioIntento);
-        Task<bool> CrearIntentosAsync(UserAttempts usuarioIntento);
-        Task<bool> CrearUsuarioAsync(Usuario usuario);
-        Task<UserAttempts?> ObtenerIntentosUsuarioAsync(int usuarioId);
+        Task<User?> GetUserForEmailAsync(string email);
+        Task<bool> UpdateUserBlockedAsync(User user);
+        Task<bool> UpdateAttemptAsync(UserAttempts userAttempts);
+        Task<bool> CreateAttemptAsync(UserAttempts userAttempts);
+        Task<bool> CreateUserAsync(User user);
+        Task<UserAttempts?> GetAttemptsUserAsync(int userId);
     }
 }

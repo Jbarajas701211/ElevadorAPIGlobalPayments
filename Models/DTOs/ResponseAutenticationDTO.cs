@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Models.DTOs
 {
-    public class UsuarioDTO
+    public class ResponseAutenticationDTO
     {
-        public string Nombre { get; set; }
-        public string Correo { get; set; }
-        public string Clave { get; set; }
+        public required string Token { get; set; }
+        public DateTime Expiration { get; set; }
     }
 }

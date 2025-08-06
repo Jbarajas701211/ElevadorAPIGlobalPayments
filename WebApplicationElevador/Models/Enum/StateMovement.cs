@@ -1,8 +1,8 @@
 ﻿namespace WebApplicationElevador.Models.Enum
 {
-    public enum EstadoPuerta
+    public enum StateMovement
     {
-        Abierta,
-        Cerrada
+        Stop,
+        Moving
     }
 }

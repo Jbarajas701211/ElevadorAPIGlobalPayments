@@ -9,10 +9,10 @@ namespace Models.Entities
     public class UserAttempts
     {
         public int Id { get; set; }
-        public int UsuarioId { get; set; }
-        public int Intentos { get; set; }
-        public bool Bloqueado { get; set; }
-        public DateTime? FechaBloqueo { get; set; }
-        public Usuario Usuario { get; set; }
+        public int UserId { get; set; }
+        public int Attemps { get; set; }
+        public bool Blocked { get; set; }
+        public DateTime? DateBlocked { get; set; }
+        public User User { get; set; }
     }
 }

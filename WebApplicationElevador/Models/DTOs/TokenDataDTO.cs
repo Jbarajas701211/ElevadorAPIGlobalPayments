@@ -6,7 +6,7 @@ namespace WebApplicationElevador.Models.DTOs
     {
         [JsonPropertyName("token")]
         public required string Token { get; set; }
-        [JsonPropertyName("expiracion")]
-        public DateTime Expiracion { get; set; }
+        [JsonPropertyName("expiration")]
+        public DateTime Expiration { get; set; }
     }
 }

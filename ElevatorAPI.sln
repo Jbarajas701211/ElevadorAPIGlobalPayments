@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElevadorAPI", "ElevadorAPI\ElevadorAPI.csproj", "{E644C75C-AFE6-43FB-80CE-CC156B5EA6EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElevatorAPI", "ElevadorAPI\ElevatorAPI.csproj", "{E644C75C-AFE6-43FB-80CE-CC156B5EA6EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{793557DD-C970-4589-A455-15BB816B63D2}"
 EndProject
@@ -11,15 +11,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Implementation", "Implementation\Implementation.csproj", "{D706F06E-8367-4AE1-B393-EA359F69B4C2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiElevador", "ApiElevador", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiElevator", "ApiElevator", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{CAE428B0-16B9-4AAF-BAD9-7E15F718BB2D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AplicacinWebElevador", "AplicacinWebElevador", "{43486465-C614-44F0-BD02-86A7405BC861}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AplicationWebElevador", "AplicationWebElevador", "{43486465-C614-44F0-BD02-86A7405BC861}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationElevador", "WebApplicationElevador\WebApplicationElevador.csproj", "{E63771A1-732C-4937-8C3C-9D2A7B82DA9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationElevator", "WebApplicationElevador\WebApplicationElevator.csproj", "{E63771A1-732C-4937-8C3C-9D2A7B82DA9D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiElevadorTest", "ApiElevadorTest", "{DBBCFB94-44A6-42E4-B0A3-5974F4D4DBD1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiElevatorTest", "ApiElevatorTest", "{DBBCFB94-44A6-42E4-B0A3-5974F4D4DBD1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiElevadorTest", "ApiElevadorTest\ApiElevadorTest.csproj", "{D60530A1-7EE4-4CB2-9587-FCC64CE30814}"
 EndProject

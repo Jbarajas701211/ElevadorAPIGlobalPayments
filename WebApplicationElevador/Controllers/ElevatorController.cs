@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.Json;
 using WebApplicationElevador.Interfaces;
@@ -8,9 +7,9 @@ using WebApplicationElevador.Models.DTOs;
 using WebApplicationElevador.Models.Enum;
 using WebApplicationElevador.Models.View;
 
-namespace ElevadorWebAplication.Controllers
+namespace WebApplicationElevador.Controllers
 {
-    public class ElevadorController : Controller
+    public class ElevatorController : Controller
     {
         private readonly IHttpClientHelper _httpClientHelper;
         private readonly IConfiguration _configuration;
@@ -18,7 +17,7 @@ namespace ElevadorWebAplication.Controllers
 
         private string token = string.Empty;
 
-        public ElevadorController(IHttpClientHelper httpClientHelper, IConfiguration configuration, IUtility utility)
+        public ElevatorController(IHttpClientHelper httpClientHelper, IConfiguration configuration, IUtility utility)
         {
             _httpClientHelper = httpClientHelper;
             _configuration = configuration;
@@ -26,56 +25,56 @@ namespace ElevadorWebAplication.Controllers
         }
         public IActionResult Index()
         {
-            var modelSelection = new ModeloElevadorView();
+            var modelSelection = new ModelElevatorView();
 
             if (TempData["ErrorMessage"] is string responseJsonError)
             {
                 return View(modelSelection);
             }
 
-            if (TempData["ElevadorResponse"] is string responseJson)
+            if (TempData["ElevatorResponse"] is string responseJson)
             {
                 var response = JsonSerializer.Deserialize<ResponseApi>(responseJson);
                 if (response is not null)
                 {
-                    var data = _utility.DeserializeData<ElevadorEstadoDTO>(response);
-                    modelSelection.ElevadorEstado.PisoActual = data.Result.PisoActual;
-                    modelSelection.ElevadorEstado.Puertas = data.Result.Puertas;
-                    modelSelection.ElevadorEstado.DireccionActual = data.Result.DireccionActual;
+                    var data = _utility.DeserializeData<StateElevatorDTO>(response);
+                    modelSelection.StateElevator.CurrentFloor = data.Result.CurrentFloor;
+                    modelSelection.StateElevator.Doors = data.Result.Doors;
+                    modelSelection.StateElevator.CurrentDirection = data.Result.CurrentDirection;
                 }
             }
 
-            modelSelection.EstadoPuertaOptions = Enum.GetValues(typeof(EstadoPuerta))
-                .Cast<EstadoPuerta>()
+            modelSelection.StateDoorOptions = Enum.GetValues(typeof(StateDoor))
+                .Cast<StateDoor>()
                 .Select(e => new SelectListItem
                 {
                     Text = e.ToString(),
                     Value = ((int)e).ToString(),
-                    Selected = e == modelSelection.EstadoPuerta
+                    Selected = e == modelSelection.StateDoor
                 }).ToList();
 
-            modelSelection.EstadoMovimientoOptions = Enum.GetValues(typeof(EstadoMovimiento))
-                .Cast<EstadoMovimiento>()
+            modelSelection.StateMovementOptions = Enum.GetValues(typeof(StateMovement))
+                .Cast<StateMovement>()
                 .Select(e => new SelectListItem
                 {
                     Text = e.ToString(),
                     Value = ((int)e).ToString(),
-                    Selected = e == modelSelection.EstadoMovimiento
+                    Selected = e == modelSelection.StateMovement
                 }).ToList();
 
-            modelSelection.DireccionOptions = Enum.GetValues(typeof(DireccionElevador))
-                .Cast<DireccionElevador>()
+            modelSelection.DirectionOptions = Enum.GetValues(typeof(DirectionElevator))
+                .Cast<DirectionElevator>()
                 .Select(e => new SelectListItem
                 {
                     Text = e.ToString(),
                     Value = ((int)e).ToString(),
-                    Selected = e == modelSelection.DireccionElevador
+                    Selected = e == modelSelection.DirectionElevator
                 });
 
             return View(modelSelection);
         }
 
-        public async Task<IActionResult> LlamaElevador(SolicitudElevadorDTO solicitudElevadorDTO)
+        public async Task<IActionResult> RequestElevator(RequestElevatorDTO solicitudElevadorDTO)
         {
             try
             {
@@ -88,43 +87,43 @@ namespace ElevadorWebAplication.Controllers
 
                 if (token is not null)
                 {
-                    response = await _httpClientHelper.PostAsync<ResponseApi>("elevador/llamaElevador", solicitudElevadorDTO, token);
+                    response = await _httpClientHelper.PostAsync<ResponseApi>("elevator/requestElevator", solicitudElevadorDTO, token);
                 }
-                TempData["ElevadorResponse"] = JsonSerializer.Serialize(response);
+                TempData["ElevatorResponse"] = JsonSerializer.Serialize(response);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Ocurrio un error:{ex.Message}";
+                TempData["ErrorMessage"] = $"An error ocurred:{ex.Message}";
 
                 return RedirectToAction("Index");
             }
             
         }
 
-        public async Task<IActionResult> Subir(SolicitudElevadorDTO solicitudElevadorDTO)
+        public async Task<IActionResult> Up(RequestElevatorDTO requiredElevatorDTO)
         {
             try
             {
-                if(solicitudElevadorDTO.PisoSolicitado == 0 || 
-                    solicitudElevadorDTO.PisoSolicitado == solicitudElevadorDTO.PisoActual)
+                if(requiredElevatorDTO.FloorRequired == 0 || 
+                    requiredElevatorDTO.FloorRequired == requiredElevatorDTO.CurrentFloor)
                 {
-                    TempData["ErrorMessage"] = "Debes seleccionar un piso o selecciona uno diferente al actual";
+                    TempData["ErrorMessage"] = "You must select a floor or select a different one than the current one";
 
                     return RedirectToAction("Index");
                 }
                 
                 ResponseApi response = null;
-                solicitudElevadorDTO.DireccionSolicitada = DireccionElevador.Subir;
+                requiredElevatorDTO.DirectionRequest = DirectionElevator.Up;
                 if (string.IsNullOrEmpty(token))
                 {
                    token = await GetToken();
                 } 
                 if(token is not null)
                 {
-                    response = await _httpClientHelper.PostAsync<ResponseApi>("elevador/subir", solicitudElevadorDTO, token);
+                    response = await _httpClientHelper.PostAsync<ResponseApi>("elevator/up", requiredElevatorDTO, token);
                 }
-                TempData["ElevadorResponse"] = JsonSerializer.Serialize(response);
+                TempData["ElevatorResponse"] = JsonSerializer.Serialize(response);
 
                return RedirectToAction("Index");
 
@@ -137,36 +136,36 @@ namespace ElevadorWebAplication.Controllers
             }
         }
 
-        public async Task<IActionResult> Bajar(SolicitudElevadorDTO solicitudElevadorDTO)
+        public async Task<IActionResult> Down(RequestElevatorDTO requiredElevatorDTO)
         {
             try
             {
-                if (solicitudElevadorDTO.PisoSolicitado == 0 ||
-                    solicitudElevadorDTO.PisoSolicitado == solicitudElevadorDTO.PisoActual)
+                if (requiredElevatorDTO.FloorRequired == 0 ||
+                    requiredElevatorDTO.FloorRequired == requiredElevatorDTO.CurrentFloor)
                 {
-                    TempData["ErrorMessage"] = "Debes seleccionar un piso o selecciona uno diferente al actual";
+                    TempData["ErrorMessage"] = "You must select a floor or select a different one than the current one";
 
                     return RedirectToAction("Index");
                 }
 
                 ResponseApi response = null;
-                solicitudElevadorDTO.DireccionSolicitada = DireccionElevador.Subir;
+                requiredElevatorDTO.DirectionRequest = DirectionElevator.Up;
                 if (string.IsNullOrEmpty(token))
                 {
                     token = await GetToken();
                 }
                 if (token is not null)
                 {
-                    response = await _httpClientHelper.PostAsync<ResponseApi>("elevador/bajar", solicitudElevadorDTO, token);
+                    response = await _httpClientHelper.PostAsync<ResponseApi>("elevator/down", requiredElevatorDTO, token);
                 }
-                TempData["ElevadorResponse"] = JsonSerializer.Serialize(response);
+                TempData["ElevatorResponse"] = JsonSerializer.Serialize(response);
 
                 return RedirectToAction("Index");
 
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Ocurrio un error:{ex.Message}";
+                TempData["ErrorMessage"] = $"An error occurred:{ex.Message}";
 
                 return RedirectToAction("Index");
             }
@@ -178,9 +177,9 @@ namespace ElevadorWebAplication.Controllers
             var email = _configuration.GetValue<string>("User");
             var password = _configuration.GetValue<string>("Password");
 
-            var loginDto = new LoginDTO { Correo = email!, Clave = password! };
+            var loginDto = new LoginDTO { Email = email!, Password = password! };
 
-            var loginResponse = await _httpClientHelper.PostAsync<ResponseApi>("usuario/login", loginDto);
+            var loginResponse = await _httpClientHelper.PostAsync<ResponseApi>("user/login", loginDto);
             var getToken = _utility.DeserializeData<TokenDataDTO>(loginResponse);
             if (getToken is not null) 
             {

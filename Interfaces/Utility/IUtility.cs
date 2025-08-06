@@ -10,7 +10,7 @@ namespace Interfaces.Utility
 {
     public interface IUtility
     {
-        string encriptarSHA256(string texto);
-        RespuestaAutenticacionDTO GenerarJWT(Usuario usuario);
+        string EncryptSHA256(string texto);
+        ResponseAutenticationDTO GenerateJWT(User user);
     }
 }

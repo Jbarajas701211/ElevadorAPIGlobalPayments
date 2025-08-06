@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Interfaces
 {
-    public interface IManagementUsuario
+    public interface IManagementUser
     {
-        Task<ApiResponse<RespuestaAutenticacionDTO>> RegistroUsuario(Usuario usuario);
+        Task<ApiResponse<ResponseAutenticationDTO>> UserRegistration(User user);
 
-        Task<ApiResponse<RespuestaAutenticacionDTO>> Login(LoginDTO loginDTO);
+        Task<ApiResponse<ResponseAutenticationDTO>> Login(LoginDTO loginDTO);
     }
 }

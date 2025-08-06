@@ -20,11 +20,11 @@ namespace Implementation.Utilitys
             _configuration = configuration;
         }
 
-        public string encriptarSHA256(string texto)
+        public string EncryptSHA256(string text)
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(texto));
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(text));
 
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < bytes.Length; i++)
@@ -35,24 +35,24 @@ namespace Implementation.Utilitys
             }
         }
 
-        public RespuestaAutenticacionDTO GenerarJWT(Usuario usuario)
+        public ResponseAutenticationDTO GenerateJWT(User user)
         {
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
-                new Claim(ClaimTypes.Email, usuario.Correo!)
+                new Claim(ClaimTypes.Name, user.IdUser.ToString()),
+                new Claim(ClaimTypes.Email, user.Email!)
             };
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
             var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
-            var expiracion = DateTime.UtcNow.AddMinutes(30);
-            var tokenSeguridad = new JwtSecurityToken(
+            var expiration = DateTime.UtcNow.AddMinutes(30);
+            var tokenSecurity = new JwtSecurityToken(
                 claims: claims,
-                expires: expiracion,
+                expires: expiration,
                 signingCredentials: creds);
-            var token = new JwtSecurityTokenHandler().WriteToken(tokenSeguridad);
-            return new RespuestaAutenticacionDTO { Token = token, Expiracion = expiracion };
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenSecurity);
+            return new ResponseAutenticationDTO { Token = token, Expiration = expiration };
         }
     }
 }

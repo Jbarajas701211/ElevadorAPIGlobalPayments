@@ -11,135 +11,135 @@ namespace ApiElevadorTest.ElevadorApiTest
 {
     public class ElevadorTest
     {
-        private readonly Elevador _elevador;
+        private readonly Elevator _elevador;
 
         public ElevadorTest()
         {
-            _elevador = new Elevador();
+            _elevador = new Elevator();
         }
 
         [Fact]
         public async Task ElevadorHaciaArriba_ReturnsError_WhenPisoActualIs5()
         {
-            var solicitud = new SolicitudElevadorDTO
+            var solicitud = new RequestElevatorDTO
             {
-                PisoActual = 5,
-                PisoSolicitado = 5,
-                DireccionSolicitada = DireccionElevador.Subir
+                CurrentFloor = 5,
+                FloorRequired = 5,
+                DirectionRequest = DirectionElevator.Up
             };
 
-            var result = await _elevador.ElevadorHaciaArriba(solicitud);
+            var result = await _elevador.ElevatorUp(solicitud);
 
             Assert.False(result.Success);
-            Assert.Contains("No se puede solicitar hacia arriba en el piso 5", result.Errors);
+            Assert.Contains("Yo cannot request upwards on the 5th floor", result.Errors);
         }
 
         [Fact]
         public async Task ElevadorHaciaArriba_ReturnsError_WhenPisoActualEqualsPisoSolicitado()
         {
-            var solicitud = new SolicitudElevadorDTO
+            var solicitud = new RequestElevatorDTO
             {
-                PisoActual = 3,
-                PisoSolicitado = 3,
-                DireccionSolicitada = DireccionElevador.Subir
+                CurrentFloor = 3,
+                FloorRequired = 3,
+                DirectionRequest = DirectionElevator.Up
             };
 
-            var result = await _elevador.ElevadorHaciaArriba(solicitud);
+            var result = await _elevador.ElevatorUp(solicitud);
 
             Assert.False(result.Success);
-            Assert.Contains("Ya se encuentra en el piso solicitado", result.Errors);
+            Assert.Contains("You are already on the requested floor", result.Errors);
         }
 
         [Fact]
         public async Task ElevadorHaciaArriba_ReturnsSuccess_WhenValid()
         {
-            var solicitud = new SolicitudElevadorDTO
+            var solicitud = new RequestElevatorDTO
             {
-                PisoActual = 2,
-                PisoSolicitado = 3,
-                DireccionSolicitada = DireccionElevador.Subir
+                CurrentFloor = 2,
+                FloorRequired = 3,
+                DirectionRequest = DirectionElevator.Up
             };
 
-            var result = await _elevador.ElevadorHaciaArriba(solicitud);
+            var result = await _elevador.ElevatorUp(solicitud);
 
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
-            Assert.Equal(3, result.Data.PisoActual);
-            Assert.Equal(DireccionElevador.Subir, result.Data.DireccionActual);
-            Assert.Equal(EstadoPuerta.Cerrada, result.Data.Puertas);
-            Assert.Equal(EstadoMovimiento.Moviendo, result.Data.EstadoMovimiento);
+            Assert.Equal(3, result.Data.CurrentFloor);
+            Assert.Equal(DirectionElevator.Up, result.Data.CurrentDirection);
+            Assert.Equal(StateDoor.Close, result.Data.Doors);
+            Assert.Equal(StateMovement.Moving, result.Data.StateMovement);
         }
 
         [Fact]
         public async Task ElevadorHaciaAbajo_ReturnsError_WhenPisoActualIs1()
         {
-            var solicitud = new SolicitudElevadorDTO
+            var solicitud = new RequestElevatorDTO
             {
-                PisoActual = 1,
-                PisoSolicitado = 1,
-                DireccionSolicitada = DireccionElevador.Bajar
+                CurrentFloor = 1,
+                FloorRequired = 1,
+                DirectionRequest = DirectionElevator.Down
             };
 
-            var result = await _elevador.ElevadorHaciaAbajo(solicitud);
+            var result = await _elevador.ElevatorDown(solicitud);
 
             Assert.False(result.Success);
-            Assert.Contains("No se puede solicitar hacia abajo en el piso 1", result.Errors);
+            Assert.Contains("You cannot request a descent on the 1st floor", result.Errors);
         }
 
         [Fact]
         public async Task ElevadorHaciaAbajo_ReturnsError_WhenPisoActualEqualsPisoSolicitado()
         {
-            var solicitud = new SolicitudElevadorDTO
+            var solicitud = new RequestElevatorDTO
             {
-                PisoActual = 2,
-                PisoSolicitado = 2,
-                DireccionSolicitada = DireccionElevador.Bajar
+                CurrentFloor = 2,
+                FloorRequired = 2,
+                DirectionRequest = DirectionElevator.Down
             };
 
-            var result = await _elevador.ElevadorHaciaAbajo(solicitud);
+            var result = await _elevador.ElevatorDown(solicitud);
 
             Assert.False(result.Success);
-            Assert.Contains("Ya se encuentra en el piso solicitado", result.Errors);
+            Assert.Contains("You are already on the requested floor", result.Errors);
         }
 
         [Fact]
         public async Task ElevadorHaciaAbajo_ReturnsSuccess_WhenValid()
         {
-            var solicitud = new SolicitudElevadorDTO
+            var solicitud = new RequestElevatorDTO
             {
-                PisoActual = 3,
-                PisoSolicitado = 2,
-                DireccionSolicitada = DireccionElevador.Bajar
+                CurrentFloor = 3,
+                FloorRequired = 2,
+                DirectionRequest = DirectionElevator.Down
             };
 
-            var result = await _elevador.ElevadorHaciaAbajo(solicitud);
+            var result = await _elevador.ElevatorDown(solicitud);
 
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
-            Assert.Equal(2, result.Data.PisoActual);
-            Assert.Equal(DireccionElevador.Bajar, result.Data.DireccionActual);
-            Assert.Equal(EstadoPuerta.Cerrada, result.Data.Puertas);
-            Assert.Equal(EstadoMovimiento.Moviendo, result.Data.EstadoMovimiento);
+            Assert.Equal(2, result.Data.CurrentFloor);
+            Assert.Equal(DirectionElevator.Down, result.Data.CurrentDirection);
+            Assert.Equal(StateDoor.Close, result.Data.Doors);
+            Assert.Equal(StateMovement.Moving, result.Data.StateMovement);
         }
 
         [Fact]
         public async Task LlamaElevador_ReturnsSuccess_AndOpensDoor()
         {
-            var solicitud = new SolicitudElevadorDTO
+            var solicitud = new RequestElevatorDTO
             {
-                PisoActual = 4,
-                PisoSolicitado = 2,
-                DireccionSolicitada = DireccionElevador.Ninguna
+                CurrentFloor = 4,
+                FloorRequired = 2,
+                DirectionRequest = DirectionElevator.None
             };
 
-            var result = await _elevador.LlamaElevador(solicitud);
+            var result = await _elevador.RequestElevator(solicitud);
 
             Assert.True(result.Success);
             Assert.NotNull(result.Data);
-            Assert.Equal(4, result.Data.PisoActual);
-            Assert.Equal(EstadoPuerta.Abierta, result.Data.Puertas);
-            Assert.Equal(EstadoMovimiento.Parado, result.Data.EstadoMovimiento);
-            Assert.Equal(DireccionElevador.Ninguna, result.Data.DireccionActual);
+            Assert.Equal(4, result.Data.CurrentFloor);
+            Assert.Equal(StateDoor.Open, result.Data.Doors);
+            Assert.Equal(StateMovement.Stop, result.Data.StateMovement);
+            Assert.Equal(DirectionElevator.None, result.Data.CurrentDirection);
         }
     }
 }

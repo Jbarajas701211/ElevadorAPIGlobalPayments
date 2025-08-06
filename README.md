@@ -1,150 +1,149 @@
-# Mi API en .NET Core
+# My API in .NET Core
 
-Esta es una API desarrollada con ASP.NET Core en conjunto con una aplicación Web
-es para el desarrollo de control de un elevador.
+This is an API developed with ASP.NET Core in conjunction with a Web application
+for developing elevator controls.
 
-## Cómo usar
 
-- Clona el repositorio
-- Deberás ejecutar el archivo Script.sql que se encuentra en la carpeta Solution Items, el query crea la bd y tablas para el login
-- Restaura los paquetes NuGet
-- Ejecuta la aplicación
+## How to use
 
-## Endpoints principales
+- Clone the repository
+- You must run the Script.sql file located in the Solution Items folder. The query creates the database and tables for the login
+- Restore the NuGet packages
+- Run the application and you can see in the top a menu, select the option Elevator
 
-### Para Usuario
+## Main Endpoints
 
-Para poder ejecutar el registro de un usuario requieres hacer la petición en el siguiente endpoint incluyendo el  json de entrada
-- GET /api/Usuario/registro
-  El json de entrada es el siguiente: 
-  {
-  "nombre": "string",
-  "correo": "string",
-  "clave": "string"
-  }
+### For User
 
-  Lo que obtendrás como respuesta una vez creado el usuario es el siguiente json, 
-  donde se enviara el token para su uso en los endpoints donde sea requerido y el tiempo de expiración:
-  {
-  "success": true,
-  "data": {
-    "token": "string",
-    "expiracion": "2025-07-29T20:34:12.695Z"
-  },
-  "errors": [
-    "string"
-  ]
-  }
-
-Para realizar el login deberas hacer la petición al siguiente endpoint
-- POST /api/Usuario/login
-  
-  El json de entrada que deberás enviar en la petición es el siguiente:
-
-  {
-     "correo": "string",
-     "clave": "string"
-  }
-
-  Lo que obtendrás como respuesta una vez creado el usuario es el siguiente json, 
-  donde se enviara el token para su uso en los endpoints donde sea requerido y el tiempo de expiración:
-
-  {
-  "success": true,
-  "data": {
-    "token": "string",
-    "expiracion": "2025-07-29T20:37:44.484Z"
-  },
-  "errors": [
-    "string"
-  ]
+To register a user, you need to make the request to the following endpoint, including the input JSON:
+- GET /api/User/registration
+The input JSON is as follows:
+{
+"name": "string",
+"email": "string",
+"password": "string"
 }
 
-# ElevadorController API Documentation
+The response you will receive once the user is created is the following JSON,
+where the token will be sent for use on the endpoints where it is required, along with the expiration time:
+{
+"success": true,
+"data": {
+"token": "string",
+"expiration": "2025-07-29T20:34:12.695Z"
+},
+"errors": [
+"string"
+]
+}
 
-Este controlador expone endpoints para operar un elevador, permitiendo subir, bajar y llamar el elevador a un piso específico. Todos los endpoints requieren autenticación JWT.
+To log in, you must make a request to the following endpoint:
+
+- POST /api/User/login
+
+The input JSON you must send in the request is the following:
+
+{
+"email": "string",
+"password": "string"
+}
+
+Once the user is created, you will receive the following JSON response,
+where the token will be sent for use on the endpoints where it is required, along with the expiration time:
+
+{
+"success": true,
+"data": {
+"token": "string",
+"expiration": "2025-07-29T20:37:44.484Z"
+},
+"errors": [
+"string"
+]
+}
+
+# ElevatorController API Documentation
+
+This controller exposes endpoints for operating an elevator, allowing you to raise and lower the elevator, and call the elevator to a specific floor. All endpoints require JWT authentication.
 
 ## Endpoints
 
-### 1. Subir el elevador
+### 1. Raise the elevator
 
-**POST** `/api/elevador/subir`
+**POST** `/api/elevator/upload`
 
-- **Descripción:** Mueve el elevador hacia arriba al piso solicitado.
-- **JSON de entrada:
-  {
-  "pisoActual": 0,
-  "puertas": 0,
-  "estadoMovimiento": 0,
-  "direccionActual": 0,
-  "pisoSolicitado": 0,
-  "direccionSolicitada": 0
+- **Description:** Moves the elevator up to the requested floor.
+- **Input JSON:
+{
+"currentFloor": 0,
+"doors": 0,
+"movementState": 0,
+"currentAddress": 0,
+"requestedFloor": 0,
+"requestedAddress": 0
 }
 
-_ **JSON de salida:
-    {
-  "success": true,
-  "data": {
-    "pisoActual": 0,
-    "puertas": 0,
-    "estado": 0,
-    "direccionActual": 0
-  },
-  "errors": [
-    "string"
-  ]
+_ **Output JSON:
+{
+"success": true,
+"data": {
+"currentFloor": 0,
+"doors": 0,
+"status": 0,
+"currentAddress": 0
+},
+"errors": [
+"string"
+]
 }
 
+### 2. Lower the elevator
 
-### 2. Bajar el elevador
+**POST** `/api/elevator/down`
 
-**POST** `/api/elevador/bajar`
-
-- **Descripción:** Mueve el elevador hacia abajo al piso solicitado.
-- **JSON de entrada:
-  {
-  "pisoActual": 0,
-  "puertas": 0,
-  "estadoMovimiento": 0,
-  "direccionActual": 0,
-  "pisoSolicitado": 0,
-  "direccionSolicitada": 0
+- **Description:** Moves the elevator down to the requested floor.
+- **Input JSON:
+{
+"currentFloor": 0,
+"doors": 0,
+"movementState": 0,
+"currentAddress": 0,
+"requestedFloor": 0,
+"requestedAddress": 0
 }
 
-_ **JSON de salida:
-    {
-  "success": true,
-  "data": {
-    "pisoActual": 0,
-    "puertas": 0,
-    "estado": 0,
-    "direccionActual": 0
-  },
-  "errors": [
-    "string"
-  ]
+_ **Output JSON:
+{
+"success": true,
+"data": {
+"currentFloor": 0,
+"doors": 0,
+"status": 0,
+"currentAddress": 0
+},
+"errors": [
+"string"
+]
 }
+## Models
 
+### ElevatorDTORequest (input)
+- `currentFloor`: int — Floor where the elevator is currently located.
+- `doors`: string — Door status (`Open` or `Closed`).
+- `movementState`: string — Movement status (`Stopped` or `Moving`).
+- `currentDirection`: string — Current direction (`Up`, `Down`, `None`).
+- `requestedFloor`: int — Floor to which the elevator is being requested to move.
+- `requestedDirection`: string — Requested direction (`Up`, `Down`, `None`).
 
-## Modelos
-
-### SolicitudElevadorDTO (entrada)
-- `pisoActual`: int — Piso donde está el elevador actualmente.
-- `puertas`: string — Estado de las puertas (`Abierta` o `Cerrada`).
-- `estadoMovimiento`: string — Estado del movimiento (`Parado` o `Moviendo`).
-- `direccionActual`: string — Dirección actual (`Subir`, `Bajar`, `Ninguna`).
-- `pisoSolicitado`: int — Piso al que se solicita mover el elevador.
-- `direccionSolicitada`: string — Dirección solicitada (`Subir`, `Bajar`, `Ninguna`).
-
-### ApiResponse<ElevadorEstadoDTO> (salida)
-- `success`: bool — Indica si la operación fue exitosa.
-- `data`: ElevadorEstadoDTO — Estado actualizado del elevador.
-- `errors`: string[] — Lista de errores si la operación falla.
+### ApiResponse<ElevatorDTOStatus> (output)
+- `success`: bool — Indicates whether the operation was successful.
+- `data`: ElevatorDTOStatus — Updated elevator status.
+- `errors`: string[] — List of errors if the operation fails.
 
 ---
 
-## Notas
+## Notes
 
-- Todos los endpoints requieren autenticación JWT.
-- Los valores de los enums deben enviarse como texto (`"Subir"`, `"Bajar"`, `"Ninguna"`, `"Abierta"`, `"Cerrada"`, `"Parado"`, `"Moviendo"`).
-- En caso de error, el campo `errors` contendrá la descripción del problema.
+- All endpoints require JWT authentication.
+- Enum values must be sent as text (`Up`, `Down`, `None`, `Open`, `Closed`, `Stopped`, `Moving`).
+- In case of an error, the `errors` field will contain a description of the problem.

@@ -24,7 +24,7 @@ namespace Implementation.Utilitys
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var excludePaths = new[] { "/registro" };
+            var excludePaths = new[] { "/record" };
 
             var path = context.Request.Path.Value.ToLower();
 
@@ -46,7 +46,7 @@ namespace Implementation.Utilitys
                     if (isBlocked)
                     {
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                        await context.Response.WriteAsync("Usuario Bloqueado");
+                        await context.Response.WriteAsync("User Blocked");
                         return;
                     }
                 }
@@ -59,14 +59,14 @@ namespace Implementation.Utilitys
 
         private async Task<bool> CheckIfUserIsBlockedAsync(string email)
         {
-            var userBd = await _userRepository.ObtenerUsuarioPorCorreoAsync(email);
+            var userBd = await _userRepository.GetUserForEmailAsync(email);
 
             if (userBd is null)
             {
                 return false;
             }
 
-            return userBd.EsBloqueado;
+            return userBd.IsBlocked;
         }
     }
 }

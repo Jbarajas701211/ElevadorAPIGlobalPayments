@@ -18,7 +18,7 @@ namespace Repository
         {
             _context = context;
         }
-        public async Task<Usuario?> ObtenerUsuarioPorCorreoAsync(string correo)
+        public async Task<User?> GetUserForEmailAsync(string correo)
         {
             using (var conn = _context.CreateConnection())
             {
@@ -32,13 +32,13 @@ namespace Repository
                 {
                     if (await reader.ReadAsync())
                     {
-                        return new Usuario
+                        return new User
                         {
-                            IdUsuario = reader.GetInt32(reader.GetOrdinal("IdUsuario")),
-                            Nombre = reader["Nombre"] as string,
-                            Correo = reader["Correo"] as string,
-                            Clave = reader["Password"] as string,
-                            EsBloqueado = reader.GetBoolean(reader.GetOrdinal("EsBloqueado"))
+                            IdUser = reader.GetInt32(reader.GetOrdinal("IdUsuario")),
+                            Name = reader["Nombre"] as string,
+                            Email = reader["Correo"] as string,
+                            Password = reader["Password"] as string,
+                            IsBlocked = reader.GetBoolean(reader.GetOrdinal("EsBloqueado"))
                         };
                     }
                 }
@@ -46,7 +46,7 @@ namespace Repository
             return null;
         }
 
-        public async Task<bool> ActualizarUsuarioBloquearAsync(Usuario usuario)
+        public async Task<bool> UpdateUserBlockedAsync(User user)
         {
             using (var conn = _context.CreateConnection())
             {
@@ -55,15 +55,15 @@ namespace Repository
                                 WHERE IdUsuario = @IdUsuario";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@EsBloqueado", usuario.EsBloqueado);
-                cmd.Parameters.AddWithValue("@IdUsuario", usuario.IdUsuario);
+                cmd.Parameters.AddWithValue("@EsBloqueado", user.IsBlocked);
+                cmd.Parameters.AddWithValue("@IdUsuario", user.IdUser);
                 await conn.OpenAsync();
                 var actualizado = await cmd.ExecuteNonQueryAsync();
                 return actualizado > 0;
             }
         }
 
-        public async Task<bool> ActualizarIntentosAsync(UserAttempts usuarioIntento)
+        public async Task<bool> UpdateAttemptAsync(UserAttempts userAttempt)
         {
             using (var conn = _context.CreateConnection())
             {
@@ -74,17 +74,17 @@ namespace Repository
                                 WHERE UsuarioId = @UsuarioId";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Intentos", usuarioIntento.Intentos);
-                cmd.Parameters.AddWithValue("@Bloqueado", usuarioIntento.Bloqueado);
-                cmd.Parameters.AddWithValue("@FechaBloqueo", usuarioIntento.FechaBloqueo);
-                cmd.Parameters.AddWithValue("@UsuarioId", usuarioIntento.UsuarioId);
+                cmd.Parameters.AddWithValue("@Intentos", userAttempt.Attemps);
+                cmd.Parameters.AddWithValue("@Bloqueado", userAttempt.Blocked);
+                cmd.Parameters.AddWithValue("@FechaBloqueo", userAttempt.DateBlocked);
+                cmd.Parameters.AddWithValue("@UsuarioId", userAttempt.UserId);
                 await conn.OpenAsync();
                 var actualizado = await cmd.ExecuteNonQueryAsync();
                 return actualizado > 0;
             }
         }
 
-        public async Task<bool> CrearIntentosAsync(UserAttempts usuarioIntento)
+        public async Task<bool> CreateAttemptAsync(UserAttempts userAttempt)
         {
             using (var conn = _context.CreateConnection())
             {
@@ -97,17 +97,17 @@ namespace Repository
                                 @FechaBloqueo)";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@UsuarioId", usuarioIntento.UsuarioId);
-                cmd.Parameters.AddWithValue("@Intentos", usuarioIntento.Intentos);
-                cmd.Parameters.AddWithValue("@Bloqueado", usuarioIntento.Bloqueado);
-                cmd.Parameters.AddWithValue("@FechaBloqueo", usuarioIntento.FechaBloqueo ?? DateTime.Now);
+                cmd.Parameters.AddWithValue("@UsuarioId", userAttempt.UserId);
+                cmd.Parameters.AddWithValue("@Intentos", userAttempt.Attemps);
+                cmd.Parameters.AddWithValue("@Bloqueado", userAttempt.Blocked);
+                cmd.Parameters.AddWithValue("@FechaBloqueo", userAttempt.DateBlocked ?? DateTime.Now);
                 await conn.OpenAsync();
-                var actualizado = await cmd.ExecuteNonQueryAsync();
-                return actualizado > 0;
+                var updated = await cmd.ExecuteNonQueryAsync();
+                return updated > 0;
             }
         }
 
-        public async Task<bool> CrearUsuarioAsync(Usuario usuario)
+        public async Task<bool> CreateUserAsync(User user)
         {
             try
             {
@@ -122,13 +122,13 @@ namespace Repository
                                 @EsBloqueado)";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@Nombre", usuario.Nombre);
-                    cmd.Parameters.AddWithValue("@Correo", usuario.Correo);
-                    cmd.Parameters.AddWithValue("@Password", usuario.Clave);
-                    cmd.Parameters.AddWithValue("@EsBloqueado", usuario.EsBloqueado);
+                    cmd.Parameters.AddWithValue("@Nombre", user.Name);
+                    cmd.Parameters.AddWithValue("@Correo", user.Email);
+                    cmd.Parameters.AddWithValue("@Password", user.Password);
+                    cmd.Parameters.AddWithValue("@EsBloqueado", user.IsBlocked);
                     await conn.OpenAsync();
-                    var guardado = await cmd.ExecuteNonQueryAsync();
-                    return guardado > 0;
+                    var saved = await cmd.ExecuteNonQueryAsync();
+                    return saved > 0;
                 }
             }
             catch (SqlException ex)
@@ -139,14 +139,14 @@ namespace Repository
 
         }
 
-        public async Task<UserAttempts?> ObtenerIntentosUsuarioAsync(int usuarioId)
+        public async Task<UserAttempts?> GetAttemptsUserAsync(int userId)
         {
             using (var conn = _context.CreateConnection())
             {
                 string query = "SELECT * FROM UsuarioIntento WHERE UsuarioId = @UsuarioId";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
-                cmd.Parameters.AddWithValue("@UsuarioId", usuarioId);
+                cmd.Parameters.AddWithValue("@UsuarioId", userId);
 
                 await conn.OpenAsync();
                 using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
@@ -155,10 +155,10 @@ namespace Repository
                     {
                         return new UserAttempts
                         {
-                            Intentos = reader.GetInt32(reader.GetOrdinal("Intentos")),
-                            Bloqueado = reader.GetBoolean(reader.GetOrdinal("Bloqueado")),
-                            FechaBloqueo = reader.GetDateTime(reader.GetOrdinal("FechaBloqueo")),
-                            UsuarioId = reader.GetInt32(reader.GetOrdinal("UsuarioId"))
+                            Attemps = reader.GetInt32(reader.GetOrdinal("Intentos")),
+                            Blocked = reader.GetBoolean(reader.GetOrdinal("Bloqueado")),
+                            DateBlocked = reader.GetDateTime(reader.GetOrdinal("FechaBloqueo")),
+                            UserId = reader.GetInt32(reader.GetOrdinal("UsuarioId"))
                         };
                     }
                 }

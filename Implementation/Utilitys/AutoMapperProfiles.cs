@@ -13,7 +13,7 @@ namespace Implementation.Utilitys
     {
         public AutoMapperProfiles()
         {
-            CreateMap<Usuario, UsuarioDTO>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
         }
     }
 }

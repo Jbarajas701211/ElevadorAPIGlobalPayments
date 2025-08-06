@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Models.Enums
 {
-    public enum EstadoPuerta
+    public enum DirectionElevator
     {
-        Abierta,
-        Cerrada
+        None,
+        Up,
+        Down
     }
 }

@@ -24,9 +24,9 @@ builder.Services.AddTransient<IAppDbContext>(sp =>
     return new AppDbContext(connectionString);
 });
 
-builder.Services.AddTransient<IElevador, Elevador>();
+builder.Services.AddTransient<IElevator, Elevator>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
-builder.Services.AddTransient<IManagementUsuario, ManagementUsuario>();
+builder.Services.AddTransient<IManagementUser, ManagementUser>();
 builder.Services.AddTransient<IUtility, Implementation.Utilitys.Utility>();
 
 builder.Services.AddAuthentication(config =>
