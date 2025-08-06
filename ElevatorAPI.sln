@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationElevator", "W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiElevatorTest", "ApiElevatorTest", "{DBBCFB94-44A6-42E4-B0A3-5974F4D4DBD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiElevadorTest", "ApiElevadorTest\ApiElevadorTest.csproj", "{D60530A1-7EE4-4CB2-9587-FCC64CE30814}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiElevatorTest", "ApiElevadorTest\ApiElevatorTest.csproj", "{D60530A1-7EE4-4CB2-9587-FCC64CE30814}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{750817EE-D335-44C5-A783-D825899E16C8}"
 	ProjectSection(SolutionItems) = preProject

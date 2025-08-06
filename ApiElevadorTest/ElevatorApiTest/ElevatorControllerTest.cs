@@ -7,7 +7,7 @@ using Models.Entities;
 using Models.Enums;
 using Moq;
 
-namespace ApiElevadorTest.ElevadorApiTest
+namespace ApiElevatorTest.ElevatorApiTest
 {
     public class ElevatorControllerTest
     {

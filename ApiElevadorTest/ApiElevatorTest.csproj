@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ElevadorAPI\ElevadorAPI.csproj" />
     <ProjectReference Include="..\ElevadorAPI\ElevatorAPI.csproj" />
     <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
   </ItemGroup>

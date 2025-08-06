@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace ApiElevadorTest.ElevadorApiTest
 {
-    public class ElevadorTest
+    public class ElevatorTest
     {
         private readonly Elevator _elevador;
 
-        public ElevadorTest()
+        public ElevatorTest()
         {
             _elevador = new Elevator();
         }

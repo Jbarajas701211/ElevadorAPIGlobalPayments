@@ -11,7 +11,7 @@ using Xunit;
 
 namespace ApiElevadorTest.UsuarioApiTest
 {
-    public class UsuarioControllerTest
+    public class UserControllerTest
     {
         private readonly Mock<IManagementUser> _managementUsuarioMock;
         private readonly Mock<IMapper> _mapperMock;
@@ -19,7 +19,7 @@ namespace ApiElevadorTest.UsuarioApiTest
         private readonly UserController _controller;
 
 
-        public UsuarioControllerTest()
+        public UserControllerTest()
         {
             _managementUsuarioMock = new Mock<IManagementUser>();
             _mapperMock = new Mock<IMapper>();
